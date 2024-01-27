@@ -16,19 +16,10 @@ func HandlePeer(
 		return nil, nil, err
 	}
 
-	rtpSender, err := peer.AddTrack(track.Inner())
+	_, err = peer.AddTrack(track.Inner())
 	if err != nil {
 		return nil, nil, err
 	}
-
-	go func() {
-		rtcpBuf := make([]byte, 1500)
-		for {
-			if _, _, rtcpErr := rtpSender.Read(rtcpBuf); rtcpErr != nil {
-				return
-			}
-		}
-	}()
 
 	err = peer.SetRemoteDescription(offer)
 	if err != nil {
@@ -37,6 +28,12 @@ func HandlePeer(
 
 	peer.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 		fmt.Printf("Connection state changed: %s\n", state.String())
+		if state == webrtc.PeerConnectionStateFailed || state == webrtc.PeerConnectionStateDisconnected {
+			err := peer.Close()
+			if err != nil {
+				fmt.Printf("ERR: %s\n", err.Error())
+			}
+		}
 	})
 
 	for _, candidate := range candidates {
