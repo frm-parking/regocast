@@ -1,0 +1,21 @@
+[signaling]
+host = "127.0.0.1"
+port = 9097
+
+[ice]
+stun = "stun:stun.l.google.com:19302"
+turn = "turns:freeturn.net:5349"
+turn_usr = "free"
+turn_pwd = "free"
+
+[jwt]
+algo = "ES384"
+public = """\
+-----BEGIN PUBLIC KEY-----
+...
+-----END PUBLIC KEY-----\
+"""
+
+[[stream]]
+id = "cam-1"
+url = "rtsp://admin:admin@localhost:51560/live/main"

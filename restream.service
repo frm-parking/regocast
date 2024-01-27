@@ -1,0 +1,12 @@
+[Unit]
+Description=Restream Server
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+Environment="CONFIG=/etc/restream/config.toml"
+ExecStart=/usr/local/bin/restream
+
+[Install]
+WantedBy=multi-user.target
